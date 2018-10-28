@@ -66,7 +66,7 @@ function Started(props) {
         <Button
           backgroundColor="#6445A2"
           color="#fff"
-          onClick={props.postGiveAway}
+          onClick={props.post}
         >
           Submit
         </Button>
