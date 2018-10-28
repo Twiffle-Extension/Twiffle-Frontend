@@ -9,6 +9,12 @@ import Trivia from "./Trivia";
 import Custom from "./Custom";
 import ViewerOverlay from "./ViewerOverlay";
 
+function parseJSON(response) {
+  return response.text().then(function(text) {
+    return text ? JSON.parse(text) : {}
+  })
+}
+
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -27,7 +33,7 @@ export default class App extends React.Component {
 
       title: "",
       linkToItem: "",
-      twiffleType: "raffle",
+      twiffleType: "random",
 
       cNum: "",
       cHold: "",
@@ -50,7 +56,9 @@ export default class App extends React.Component {
   contextUpdate(context, delta) {
     if (delta.includes("theme")) {
       this.setState(() => {
-        return { theme: context.theme };
+        return {
+          theme: context.theme
+        };
       });
     }
   }
@@ -72,7 +80,9 @@ export default class App extends React.Component {
 
           // now we've done the setup for the component, let's set the state to true to force a rerender with the correct data.
           this.setState(() => {
-            return { finishedLoading: true };
+            return {
+              finishedLoading: true
+            };
           });
         }
       });
@@ -104,106 +114,178 @@ export default class App extends React.Component {
     }
   }
 
-  postGiveAway = () => {
+  postGiveAway = async () => {
     var data = {
-      "url": this.state.linkToItem,
-      "title": this.state.title,
+      // "url": this.state.linkToItem,
+      // "title": this.state.title,
       "raffle_type": this.state.twiffleType
     }
-    console.log(data)
-    // fetch('https://210bd120.ngrok.io/stream/raffle/start/123', {
-    //   method: 'POST',
-    //   mode: "cors",
-    //   credentials: "same-origin",
-    //   headers: {
-    //     "Content-Type": "application/json; charset=utf-8",
-    //     // "Content-Type": "application/x-www-form-urlencoded",
-    //   },
-    //   body: JSON.stringify(data)
-    // })
-    this.setField("isStarted", true)
+    console.log(JSON.stringify(data))
+    let res = await fetch('https://210bd120.ngrok.io/stream/raffle/start/123', {
+      method: 'POST',
+      mode: "no-cors",
+      // credentials: "same-origin", // include, same-origin, *omit
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        // "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: JSON.stringify(data)
+    });
+
+    res = await parseJSON(res);
+    console.log("res", res);
   }
 
   onChange = (field, next) => {
-    this.setState(() => ({ [field]: next }));
+    this.setState(() => ({
+      [field]: next
+    }));
   };
 
   setField = (field, next) => {
-    this.setState(s => ({ [field]: next }));
+    this.setState(s => ({
+      [field]: next
+    }));
   };
 
   render() {
     if (this.state.finishedLoading && this.state.isVisible) {
       if (this.Authentication.state.role === "broadcaster") {
         if (!this.state.isIntroduced) {
-          return <Intro setField={this.setField} />;
+          return <Intro setField = {
+            this.setField
+          }
+          />;
         } else {
           if (!this.state.isStarted) {
-            return (
-              <Started
-                title={this.state.title}
-                linkToItem={this.state.linkToItem}
-                twiffleType={this.state.twiffleType}
-                onChange={this.onChange}
-                setField={this.setField}
+            return ( <
+              Started title = {
+                this.state.title
+              }
+              linkToItem = {
+                this.state.linkToItem
+              }
+              twiffleType = {
+                this.state.twiffleType
+              }
+              onChange = {
+                this.onChange
+              }
+              setField = {
+                this.setField
+              }
+              post = {
+                this.postGiveAway
+              }
               />
             );
           } else {
             if (!this.state.isCard) {
-              return (
-                <Card
-                  cNum={this.state.cNum}
-                  cHold={this.state.cHold}
-                  cMonth={this.state.cMonth}
-                  cYear={this.state.cYear}
-                  csk={this.state.csk}
-                  onChange={this.onChange}
-                  setField={this.setField}
+              return ( <
+                Card cNum = {
+                  this.state.cNum
+                }
+                cHold = {
+                  this.state.cHold
+                }
+                cMonth = {
+                  this.state.cMonth
+                }
+                cYear = {
+                  this.state.cYear
+                }
+                csk = {
+                  this.state.csk
+                }
+                onChange = {
+                  this.onChange
+                }
+                setField = {
+                  this.setField
+                }
                 />
               );
             } else {
-              if (this.state.twiffleType === "raffle") {
-                return (
-                  <Raffle
-                    participantRestriction={this.state.participantRestriction}
-                    onChange={this.onChange}
-                    setField={this.setField}
+              if (this.state.twiffleType === "random") {
+                return ( <
+                  Raffle participantRestriction = {
+                    this.state.participantRestriction
+                  }
+                  onChange = {
+                    this.onChange
+                  }
+                  setField = {
+                    this.setField
+                  }
                   />
                 );
               }
               if (this.state.twiffleType === "guessing") {
-                return (
-                  <Guessing
-                    participantRestriction={this.state.participantRestriction}
-                    guessingType={this.state.guessingType}
-                    prompt={this.state.prompt}
-                    answer={this.state.answer}
-                    onChange={this.onChange}
-                    setField={this.setField}
+                return ( <
+                  Guessing participantRestriction = {
+                    this.state.participantRestriction
+                  }
+                  guessingType = {
+                    this.state.guessingType
+                  }
+                  prompt = {
+                    this.state.prompt
+                  }
+                  answer = {
+                    this.state.answer
+                  }
+                  onChange = {
+                    this.onChange
+                  }
+                  setField = {
+                    this.setField
+                  }
                   />
                 );
               }
               if (this.state.twiffleType === "trivia") {
-                return (
-                  <Trivia
-                    participantRestriction={this.state.participantRestriction}
-                    triviaNumQuestions={this.state.triviaNumQuestions}
-                    triviaDifficulty={this.state.triviaDifficulty}
-                    triviaCategory={this.state.triviaCategory}
-                    triviaType={this.state.triviaType}
-                    onChange={this.onChange}
-                    setField={this.setField}
+                return ( <
+                  Trivia participantRestriction = {
+                    this.state.participantRestriction
+                  }
+                  triviaNumQuestions = {
+                    this.state.triviaNumQuestions
+                  }
+                  triviaDifficulty = {
+                    this.state.triviaDifficulty
+                  }
+                  triviaCategory = {
+                    this.state.triviaCategory
+                  }
+                  triviaType = {
+                    this.state.triviaType
+                  }
+                  onChange = {
+                    this.onChange
+                  }
+                  setField = {
+                    this.setField
+                  }
                   />
                 );
               }
               if (this.state.twiffleType === "custom") {
-                return (
-                  <Custom
-                    participantRestriction={this.state.participantRestriction}
-                    prompt={this.state.prompt}
-                    answer={this.state.answer}
-                    onChange={this.onChange}
-                    setField={this.setField}
+                return ( <
+                  Custom participantRestriction = {
+                    this.state.participantRestriction
+                  }
+                  prompt = {
+                    this.state.prompt
+                  }
+                  answer = {
+                    this.state.answer
+                  }
+                  onChange = {
+                    this.onChange
+                  }
+                  setField = {
+                    this.setField
+                  }
                   />
                 );
               }
@@ -211,18 +293,29 @@ export default class App extends React.Component {
           }
         }
       }
-      return (
-        <ViewerOverlay
-          streamer={this.state.streamer}
-          visibilityChanged={this.visibilityChanged}
-          isVisible={this.state.isVisible}
-          onChange={this.onChange}
-          prompt={this.state.prompt}
-          answer={this.state.answer}
+      return ( <
+        ViewerOverlay streamer = {
+          this.state.streamer
+        }
+        visibilityChanged = {
+          this.visibilityChanged
+        }
+        isVisible = {
+          this.state.isVisible
+        }
+        onChange = {
+          this.onChange
+        }
+        prompt = {
+          this.state.prompt
+        }
+        answer = {
+          this.state.answer
+        }
         />
       );
     } else {
-      return <div />;
+      return <div / > ;
     }
   }
 }

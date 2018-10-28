@@ -36,7 +36,7 @@ function Started(props){
         <option value="custom">Custom</option>
       </select>
 
-      <Button onClick={() => props.setField("isStarted", true)}>
+      <Button onClick={props.post}>
         Submit
       </Button>
       <Button onClick={() => props.setField("isIntroduced", false)}>
