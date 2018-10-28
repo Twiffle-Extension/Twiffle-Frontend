@@ -29,7 +29,13 @@ function Custom(props) {
         value={props.answer}
         onChange={({ target }) => props.onChange("answer", target.value)}
       />
-      <Button onClick={() => props.setField("isDone", true)}>Submit</Button>
+      <Button
+        backgroundColor="#6445A2"
+        color="#fff"
+        onClick={() => props.setField("isDone", true)}
+      >
+        Submit
+      </Button>
       <Button onClick={() => props.setField("isCard", false)}>Cancel</Button>
     </div>
   );

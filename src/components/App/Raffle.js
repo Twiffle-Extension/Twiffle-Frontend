@@ -18,7 +18,13 @@ function Raffle(props) {
         <option value="viewerOnly">Viewer Only</option>
         <option value="subscriberOnly">Subscriber Only</option>
       </select>
-      <Button onClick={() => props.setField("isDone", true)}>Submit</Button>
+      <Button
+        backgroundColor="#6445A2"
+        color="#fff"
+        onClick={() => props.setField("isDone", true)}
+      >
+        Submit
+      </Button>
       <Button onClick={() => props.setField("isCard", false)}>Cancel</Button>
     </div>
   );
