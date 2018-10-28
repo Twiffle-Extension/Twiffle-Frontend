@@ -19,6 +19,8 @@ export default class App extends React.Component {
     this.twitch = window.Twitch ? window.Twitch.ext : null;
     this.state = {
       countdown: 5000000,
+      raffle_id: "",
+      user_id: "123123",
       answer: "",
       finishedLoading: false,
       theme: "light",
@@ -118,9 +120,41 @@ export default class App extends React.Component {
     }
   }
 
+  postCreditCard = async () => {
+    if (this.state.cNum && this.state.cHold && this.state.cMonth && this.state.cYear && this.state.csk) {
+      var data = {
+        user_id: this.state.user_id,
+        cNum: this.state.cNum,
+        cHold: this.state.cHold,
+        cMonth: this.state.cMonth,
+        cYear: this.state.cYear,
+        csk: this.state.csk
+      };
+      let res = await fetch("https://210bd120.ngrok.io/stream/raffle/winner_details/123", {
+        method: "POST",
+        // credentials: "same-origin", // include, same-origin, *omit
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+  
+      let next = await res.json();
+      console.log("next", next);
+      if (res.ok) {
+        this.setField("isCard", true)
+      }
+    } else {
+      console.log('false')
+    }
+    
+  }
   postGiveAway = async () => {
     var data = {
       raffle_type: this.state.twiffleType,
+      raffle_metadata: {
+        "fuck": "THIS"
+      }
     };
     let res = await fetch("https://210bd120.ngrok.io/stream/raffle/start/123", {
       method: "POST",
@@ -176,6 +210,7 @@ export default class App extends React.Component {
                   csk={this.state.csk}
                   onChange={this.onChange}
                   setField={this.setField}
+                  post={this.postCreditCard}
                 />
               );
             } else {
