@@ -132,6 +132,7 @@ export default class App extends React.Component {
 
     res = await parseJSON(res);
     console.log("res", res);
+    this.setField("isStarted", true)
   }
 
   onChange = (field, next) => {
