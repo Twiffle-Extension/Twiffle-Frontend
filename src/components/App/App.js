@@ -14,6 +14,7 @@ let styles = {
   },
 };
 
+
 function Raffle(props) {
   return (
     <div>
@@ -281,6 +282,26 @@ export default class App extends React.Component {
     }
   }
 
+  postGiveAway = () => {
+    var data = {
+      "url": this.state.linkToItem,
+      "title": this.state.title,
+      "raffle_type": this.state.twiffleType
+    }
+    console.log(data)
+    // fetch('https://210bd120.ngrok.io/stream/raffle/start/123', {
+    //   method: 'POST',
+    //   mode: "cors",
+    //   credentials: "same-origin",
+    //   headers: {
+    //     "Content-Type": "application/json; charset=utf-8",
+    //     // "Content-Type": "application/x-www-form-urlencoded",
+    //   },
+    //   body: JSON.stringify(data)
+    // })
+    this.setField("isStarted", true)
+  }
+
   onChange = (field, next) => {
     this.setState(() => ({ [field]: next }));
   };
@@ -340,7 +361,7 @@ export default class App extends React.Component {
                   <option value="custom">Custom</option>
                 </select>
 
-                <Button onClick={() => this.setField("isStarted", true)}>
+                <Button onClick={this.postGiveAway}>
                   Submit
                 </Button>
                 <Button onClick={() => this.setField("isIntroduced", false)}>
