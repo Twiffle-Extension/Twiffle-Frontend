@@ -6453,6 +6453,11 @@ rc@^1.1.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+react-countdown-now@^1.1.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/react-countdown-now/-/react-countdown-now-1.3.0.tgz#13c262a530614c69e68a0d277bd33b45d925cd56"
+  integrity sha512-9MaPhB+PSlLxjpYD5TqLAru56rnTX1D7M6TUCc0UrZDGdYa1ZxdMA5mFxTwX3R5WEwwGgYk5SvmfzRIrcUCzyA==
+
 react-dom@^16.3.2:
   version "16.4.1"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.4.1.tgz#7f8b0223b3a5fbe205116c56deb85de32685dad6"
@@ -6461,6 +6466,13 @@ react-dom@^16.3.2:
     fbjs "^0.8.16"
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
+    prop-types "^15.6.0"
+
+react-flip-ticker@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/react-flip-ticker/-/react-flip-ticker-0.3.0.tgz#7ea4676317ddd5230e4c1f4e9adc2d0fc3bca527"
+  integrity sha512-aAynBa2PZ6svjhuUEejn2Mj1y99zE6inyb+d2KH5wJx3l7guzLMg8V2/y34E4vSf+vCShdTdmE9e1ubwiVhAJw==
+  dependencies:
     prop-types "^15.6.0"
 
 react-is@^16.5.2, react-is@^16.6.0:

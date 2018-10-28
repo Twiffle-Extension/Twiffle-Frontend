@@ -12,12 +12,15 @@ let styles = {
     alignItems: "center",
     marginBottom: 10,
   },
+  inline: {
+    display: "flex",
+  },
 };
 
 function WinnerOverlay(props) {
   return (
     <div>
-      <Overlay width={400} height={400}>
+      <Overlay width={400} height={250} marginTop={"18%"} marginLeft={"20%"}>
         <div className={css(styles.overlayHeader)}>
           <Text color="#fff" weight="medium">
             Participate in {props.streamer || "ChoAssUpPussy"} Raffle
@@ -41,22 +44,30 @@ function WinnerOverlay(props) {
             props.onChange("streetAddress", target.value)
           }
         />
-        <Text size="sm" color="#fff" weight="bold">
-          City
-        </Text>
-        <TextInput
-          borderRadius={6}
-          value={props.answer}
-          onChange={({ target }) => props.onChange("city", target.value)}
-        />
-        <Text size="sm" color="#fff" weight="bold">
-          State
-        </Text>
-        <TextInput
-          borderRadius={6}
-          value={props.answer}
-          onChange={({ target }) => props.onChange("state", target.value)}
-        />
+        <div className={css(styles.inline)}>
+          <div>
+            <Text size="sm" color="#fff" weight="bold">
+              City
+            </Text>
+            <TextInput
+              size="sm"
+              borderRadius={6}
+              value={props.answer}
+              onChange={({ target }) => props.onChange("city", target.value)}
+            />
+          </div>
+          <div>
+            <Text size="sm" color="#fff" weight="bold">
+              State
+            </Text>
+            <TextInput
+              size="zm"
+              borderRadius={6}
+              value={props.answer}
+              onChange={({ target }) => props.onChange("state", target.value)}
+            />
+          </div>
+        </div>
         <Text size="sm" color="#fff" weight="bold">
           Country
         </Text>
@@ -65,6 +76,9 @@ function WinnerOverlay(props) {
           value={props.answer}
           onChange={({ target }) => props.onChange("country", target.value)}
         />
+        <Button backgroundColor="#78D4FD" color="#fff" border="none">
+          Submit
+        </Button>
       </Overlay>
     </div>
   );

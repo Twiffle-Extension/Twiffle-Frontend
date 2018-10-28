@@ -8,6 +8,7 @@ import Guessing from "./Guessing";
 import Trivia from "./Trivia";
 import Custom from "./Custom";
 import ViewerOverlay from "./ViewerOverlay";
+import Countdown from "react-countdown-now";
 
 export default class App extends React.Component {
   constructor(props) {
@@ -17,6 +18,7 @@ export default class App extends React.Component {
     //if the extension is running on twitch or dev rig, set the shorthand here. otherwise, set to null.
     this.twitch = window.Twitch ? window.Twitch.ext : null;
     this.state = {
+      countdown: 5000000,
       answer: "",
       finishedLoading: false,
       theme: "light",
@@ -24,7 +26,8 @@ export default class App extends React.Component {
       isIntroduced: false,
       isStarted: false,
       isCard: false,
-      didWin: false,
+      isRunning: false,
+      didWin: true,
 
       title: "",
       linkToItem: "",
@@ -67,6 +70,11 @@ export default class App extends React.Component {
   };
 
   componentDidMount() {
+    setInterval(() => {
+      this.setState((s) =>({
+        countdown: s.countdown - 1 + "",
+      }));
+    }, 500);
     if (this.twitch) {
       this.twitch.onAuthorized(auth => {
         this.setState(() => ({ userId: auth.userId }));
@@ -171,50 +179,54 @@ export default class App extends React.Component {
                 />
               );
             } else {
-              if (this.state.twiffleType === "random") {
-                return (
-                  <Raffle
-                    participantRestriction={this.state.participantRestriction}
-                    onChange={this.onChange}
-                    setField={this.setField}
-                  />
-                );
-              }
-              if (this.state.twiffleType === "guessing") {
-                return (
-                  <Guessing
-                    participantRestriction={this.state.participantRestriction}
-                    guessingType={this.state.guessingType}
-                    prompt={this.state.prompt}
-                    answer={this.state.answer}
-                    onChange={this.onChange}
-                    setField={this.setField}
-                  />
-                );
-              }
-              if (this.state.twiffleType === "trivia") {
-                return (
-                  <Trivia
-                    participantRestriction={this.state.participantRestriction}
-                    triviaNumQuestions={this.state.triviaNumQuestions}
-                    triviaDifficulty={this.state.triviaDifficulty}
-                    triviaCategory={this.state.triviaCategory}
-                    triviaType={this.state.triviaType}
-                    onChange={this.onChange}
-                    setField={this.setField}
-                  />
-                );
-              }
-              if (this.state.twiffleType === "custom") {
-                return (
-                  <Custom
-                    participantRestriction={this.state.participantRestriction}
-                    prompt={this.state.prompt}
-                    answer={this.state.answer}
-                    onChange={this.onChange}
-                    setField={this.setField}
-                  />
-                );
+              if (this.state.isRunning) {
+                return <Countdown countdown={this.state.countdown}/>;
+              } else {
+                if (this.state.twiffleType === "random") {
+                  return (
+                    <Raffle
+                      participantRestriction={this.state.participantRestriction}
+                      onChange={this.onChange}
+                      setField={this.setField}
+                    />
+                  );
+                }
+                if (this.state.twiffleType === "guessing") {
+                  return (
+                    <Guessing
+                      participantRestriction={this.state.participantRestriction}
+                      guessingType={this.state.guessingType}
+                      prompt={this.state.prompt}
+                      answer={this.state.answer}
+                      onChange={this.onChange}
+                      setField={this.setField}
+                    />
+                  );
+                }
+                if (this.state.twiffleType === "trivia") {
+                  return (
+                    <Trivia
+                      participantRestriction={this.state.participantRestriction}
+                      triviaNumQuestions={this.state.triviaNumQuestions}
+                      triviaDifficulty={this.state.triviaDifficulty}
+                      triviaCategory={this.state.triviaCategory}
+                      triviaType={this.state.triviaType}
+                      onChange={this.onChange}
+                      setField={this.setField}
+                    />
+                  );
+                }
+                if (this.state.twiffleType === "custom") {
+                  return (
+                    <Custom
+                      participantRestriction={this.state.participantRestriction}
+                      prompt={this.state.prompt}
+                      answer={this.state.answer}
+                      onChange={this.onChange}
+                      setField={this.setField}
+                    />
+                  );
+                }
               }
             }
           }

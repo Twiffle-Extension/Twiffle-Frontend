@@ -100,7 +100,7 @@ function Trivia(props) {
         <Button
           backgroundColor="#6445A2"
           color="#fff"
-          onClick={() => props.setField("isDone", true)}
+          onClick={() => props.setField("isRunning", true)}
         >
           Submit
         </Button>
