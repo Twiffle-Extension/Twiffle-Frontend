@@ -116,8 +116,6 @@ export default class App extends React.Component {
 
   postGiveAway = async () => {
     var data = {
-      // "url": this.state.linkToItem,
-      // "title": this.state.title,
       "raffle_type": this.state.twiffleType
     }
     console.log(JSON.stringify(data))
