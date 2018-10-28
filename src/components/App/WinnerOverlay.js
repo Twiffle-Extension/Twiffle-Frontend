@@ -23,7 +23,7 @@ function WinnerOverlay(props) {
       <Overlay width={400} height={250} marginTop={"18%"} marginLeft={"20%"}>
         <div className={css(styles.overlayHeader)}>
           <Text color="#fff" weight="medium">
-            Participate in {props.streamer || "ChoAssUpPussy"} Raffle
+            Participate in {props.streamer || "User"} Raffle
           </Text>
           <Text
             color="#fff"
@@ -76,7 +76,7 @@ function WinnerOverlay(props) {
           value={props.answer}
           onChange={({ target }) => props.onChange("country", target.value)}
         />
-        <Button backgroundColor="#78D4FD" color="#fff" border="none">
+        <Button backgroundColor="#78D4FD" color="#fff" border="none" onClick={() => props.visibilityChanged(!props.isVisible)}>
           Submit
         </Button>
       </Overlay>

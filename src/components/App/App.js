@@ -8,7 +8,7 @@ import Guessing from "./Guessing";
 import Trivia from "./Trivia";
 import Custom from "./Custom";
 import ViewerOverlay from "./ViewerOverlay";
-import Countdown from "react-countdown-now";
+import Countdown from "./Countdown";
 
 export default class App extends React.Component {
   constructor(props) {
@@ -18,7 +18,7 @@ export default class App extends React.Component {
     //if the extension is running on twitch or dev rig, set the shorthand here. otherwise, set to null.
     this.twitch = window.Twitch ? window.Twitch.ext : null;
     this.state = {
-      countdown: 10000,
+      countdown: 30,
       raffle_id: "",
       user_id: "123123",
       answer: "",
@@ -53,9 +53,9 @@ export default class App extends React.Component {
     };
   }
 
-  componentDidUpdate(){
-    if(this.state.countdown === 0){
-      this.setState(() => ({ didWin: true }))
+  componentDidUpdate() {
+    if (this.state.countdown === 0) {
+      this.setState(() => ({ didWin: true }));
     }
   }
   contextUpdate(context, delta) {
@@ -78,10 +78,12 @@ export default class App extends React.Component {
 
   componentDidMount() {
     setInterval(() => {
-      this.setState((s) =>({
-        countdown: s.countdown > 0? s.countdown - 1 + "" : s.countdown,
+      this.setState(s => ({
+        countdown: s.countdown <= 0 ? 0 : s.countdown - 1 + "",
+        didWin: s.countdown <= 0 ? true : s.didWin,
+        isVisible: s.countdown <= 0 ? true : s.isVisible,
       }));
-    }, 500);
+    }, 1000);
     if (this.twitch) {
       this.twitch.onAuthorized(auth => {
         this.setState(() => ({ userId: auth.userId }));
@@ -126,40 +128,48 @@ export default class App extends React.Component {
   }
 
   postCreditCard = async () => {
-    if (this.state.cNum && this.state.cHold && this.state.cMonth && this.state.cYear && this.state.csk) {
+    if (
+      this.state.cNum &&
+      this.state.cHold &&
+      this.state.cMonth &&
+      this.state.cYear &&
+      this.state.csk
+    ) {
       var data = {
         user_id: this.state.user_id,
         cNum: this.state.cNum,
         cHold: this.state.cHold,
         cMonth: this.state.cMonth,
         cYear: this.state.cYear,
-        csk: this.state.csk
+        csk: this.state.csk,
       };
-      let res = await fetch("https://210bd120.ngrok.io/stream/raffle/winner_details/123", {
-        method: "POST",
-        // credentials: "same-origin", // include, same-origin, *omit
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-  
+      let res = await fetch(
+        "https://210bd120.ngrok.io/stream/raffle/winner_details/123",
+        {
+          method: "POST",
+          // credentials: "same-origin", // include, same-origin, *omit
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
       let next = await res.json();
       console.log("next", next);
       if (res.ok) {
-        this.setField("isCard", true)
+        this.setField("isCard", true);
       }
     } else {
-      console.log('false')
+      console.log("false");
     }
-    
-  }
+  };
   postGiveAway = async () => {
     var data = {
       raffle_type: this.state.twiffleType,
       raffle_metadata: {
-        "fuck": "THIS"
-      }
+        fuck: "THIS",
+      },
     };
     let res = await fetch("https://210bd120.ngrok.io/stream/raffle/start/123", {
       method: "POST",
@@ -220,7 +230,7 @@ export default class App extends React.Component {
               );
             } else {
               if (this.state.isRunning) {
-                return <Countdown countdown={this.state.countdown}/>;
+                return <Countdown countdown={this.state.countdown} />;
               } else {
                 if (this.state.twiffleType === "random") {
                   return (
