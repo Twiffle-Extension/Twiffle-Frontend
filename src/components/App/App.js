@@ -55,7 +55,7 @@ export default class App extends React.Component {
     }
   }
 
-  visibilityChanged(isVisible) {
+  visibilityChanged = (isVisible) => {
     this.setState(() => {
       return {
         isVisible,
@@ -191,7 +191,16 @@ export default class App extends React.Component {
           }
         }
       }
-      return <ViewerOverlay />
+      return (
+        <ViewerOverlay
+          streamer={this.state.streamer}
+          visibilityChanged={this.visibilityChanged}
+          isVisible={this.state.isVisible}
+          onChange={this.onChange}
+          prompt={this.state.prompt}
+          answer={this.state.answer}
+        />
+      );
     } else {
       return <div />;
     }
