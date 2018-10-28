@@ -84,7 +84,7 @@ function Card(props) {
         <Button
           backgroundColor="#6445A2"
           color="#fff"
-          onClick={() => props.setField("isCard", true)}
+          onClick={props.post}
         >
           Submit
         </Button>

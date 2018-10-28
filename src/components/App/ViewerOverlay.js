@@ -1,6 +1,7 @@
 import React from "react";
 import { css } from "glamor";
 import Button from "./Button";
+import WinnerOverlay from "./WinnerOverlay";
 import Overlay from "./Overlay";
 import Text from "./Text";
 import TextInput from "./TextInput";
@@ -15,6 +16,9 @@ let styles = {
 };
 
 function ViewerOverlay(props) {
+  if (props.winner){
+    return <WinnerOverlay onChange={onChange}/>
+  }
   return (
     <div>
       <Overlay width={340} height={90}>

@@ -9,12 +9,6 @@ import Trivia from "./Trivia";
 import Custom from "./Custom";
 import ViewerOverlay from "./ViewerOverlay";
 
-function parseJSON(response) {
-  return response.text().then(function(text) {
-    return text ? JSON.parse(text) : {}
-  })
-}
-
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -23,6 +17,8 @@ export default class App extends React.Component {
     //if the extension is running on twitch or dev rig, set the shorthand here. otherwise, set to null.
     this.twitch = window.Twitch ? window.Twitch.ext : null;
     this.state = {
+      raffle_id: "",
+      user_id: "123123",
       answer: "",
       finishedLoading: false,
       theme: "light",
@@ -57,19 +53,19 @@ export default class App extends React.Component {
     if (delta.includes("theme")) {
       this.setState(() => {
         return {
-          theme: context.theme
+          theme: context.theme,
         };
       });
     }
   }
 
-  visibilityChanged = (isVisible) => {
+  visibilityChanged = isVisible => {
     this.setState(() => {
       return {
         isVisible,
       };
     });
-  }
+  };
 
   componentDidMount() {
     if (this.twitch) {
@@ -81,7 +77,7 @@ export default class App extends React.Component {
           // now we've done the setup for the component, let's set the state to true to force a rerender with the correct data.
           this.setState(() => {
             return {
-              finishedLoading: true
+              finishedLoading: true,
             };
           });
         }
@@ -114,36 +110,62 @@ export default class App extends React.Component {
     }
   }
 
-  postGiveAway = async () => {
+  postCreditCard = async () => {
     var data = {
-      "raffle_type": this.state.twiffleType
-    }
-    console.log(JSON.stringify(data))
-    let res = await fetch('https://210bd120.ngrok.io/stream/raffle/start/123', {
-      method: 'POST',
-      mode: "no-cors",
+      user_id: this.state.user_id,
+      cNum: this.state.cNum,
+      cHold: this.state.cHold,
+      cMonth: this.state.cMonth,
+      cYear: this.state.cYear,
+      csk: this.state.csk
+    };
+    let res = await fetch("https://210bd120.ngrok.io/stream/raffle/winner_details/123", {
+      method: "POST",
       // credentials: "same-origin", // include, same-origin, *omit
       headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        // "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
 
-    res = await parseJSON(res);
-    console.log("res", res);
-    this.setField("isStarted", true)
+    let next = await res.json();
+    console.log("next", next);
+    if (res.ok) {
+      this.setField("isCard", true)
+    }
   }
+  postGiveAway = async () => {
+    var data = {
+      raffle_type: this.state.twiffleType,
+      raffle_metadata: {
+        "fuck": "THIS"
+      }
+    };
+    let res = await fetch("https://210bd120.ngrok.io/stream/raffle/start/123", {
+      method: "POST",
+      // credentials: "same-origin", // include, same-origin, *omit
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    let next = await res.json();
+    console.log("next", next);
+    if (res.ok) {
+      this.setField("isStarted", true);
+    }
+  };
 
   onChange = (field, next) => {
     this.setState(() => ({
-      [field]: next
+      [field]: next,
     }));
   };
 
   setField = (field, next) => {
     this.setState(s => ({
-      [field]: next
+      [field]: next,
     }));
   };
 
@@ -151,140 +173,76 @@ export default class App extends React.Component {
     if (this.state.finishedLoading && this.state.isVisible) {
       if (this.Authentication.state.role === "broadcaster") {
         if (!this.state.isIntroduced) {
-          return <Intro setField = {
-            this.setField
-          }
-          />;
+          return <Intro setField={this.setField} />;
         } else {
           if (!this.state.isStarted) {
-            return ( <
-              Started title = {
-                this.state.title
-              }
-              linkToItem = {
-                this.state.linkToItem
-              }
-              twiffleType = {
-                this.state.twiffleType
-              }
-              onChange = {
-                this.onChange
-              }
-              setField = {
-                this.setField
-              }
-              post = {
-                this.postGiveAway
-              }
+            return (
+              <Started
+                title={this.state.title}
+                linkToItem={this.state.linkToItem}
+                twiffleType={this.state.twiffleType}
+                onChange={this.onChange}
+                setField={this.setField}
+                post={this.postGiveAway}
               />
             );
           } else {
             if (!this.state.isCard) {
-              return ( <
-                Card cNum = {
-                  this.state.cNum
-                }
-                cHold = {
-                  this.state.cHold
-                }
-                cMonth = {
-                  this.state.cMonth
-                }
-                cYear = {
-                  this.state.cYear
-                }
-                csk = {
-                  this.state.csk
-                }
-                onChange = {
-                  this.onChange
-                }
-                setField = {
-                  this.setField
-                }
+              return (
+                <Card
+                  cNum={this.state.cNum}
+                  cHold={this.state.cHold}
+                  cMonth={this.state.cMonth}
+                  cYear={this.state.cYear}
+                  csk={this.state.csk}
+                  onChange={this.onChange}
+                  setField={this.setField}
+                  post={this.postCreditCard}
                 />
               );
             } else {
               if (this.state.twiffleType === "random") {
-                return ( <
-                  Raffle participantRestriction = {
-                    this.state.participantRestriction
-                  }
-                  onChange = {
-                    this.onChange
-                  }
-                  setField = {
-                    this.setField
-                  }
+                return (
+                  <Raffle
+                    participantRestriction={this.state.participantRestriction}
+                    onChange={this.onChange}
+                    setField={this.setField}
                   />
                 );
               }
               if (this.state.twiffleType === "guessing") {
-                return ( <
-                  Guessing participantRestriction = {
-                    this.state.participantRestriction
-                  }
-                  guessingType = {
-                    this.state.guessingType
-                  }
-                  prompt = {
-                    this.state.prompt
-                  }
-                  answer = {
-                    this.state.answer
-                  }
-                  onChange = {
-                    this.onChange
-                  }
-                  setField = {
-                    this.setField
-                  }
+                return (
+                  <Guessing
+                    participantRestriction={this.state.participantRestriction}
+                    guessingType={this.state.guessingType}
+                    prompt={this.state.prompt}
+                    answer={this.state.answer}
+                    onChange={this.onChange}
+                    setField={this.setField}
                   />
                 );
               }
               if (this.state.twiffleType === "trivia") {
-                return ( <
-                  Trivia participantRestriction = {
-                    this.state.participantRestriction
-                  }
-                  triviaNumQuestions = {
-                    this.state.triviaNumQuestions
-                  }
-                  triviaDifficulty = {
-                    this.state.triviaDifficulty
-                  }
-                  triviaCategory = {
-                    this.state.triviaCategory
-                  }
-                  triviaType = {
-                    this.state.triviaType
-                  }
-                  onChange = {
-                    this.onChange
-                  }
-                  setField = {
-                    this.setField
-                  }
+                return (
+                  <Trivia
+                    participantRestriction={this.state.participantRestriction}
+                    triviaNumQuestions={this.state.triviaNumQuestions}
+                    triviaDifficulty={this.state.triviaDifficulty}
+                    triviaCategory={this.state.triviaCategory}
+                    triviaType={this.state.triviaType}
+                    onChange={this.onChange}
+                    setField={this.setField}
                   />
                 );
               }
               if (this.state.twiffleType === "custom") {
-                return ( <
-                  Custom participantRestriction = {
-                    this.state.participantRestriction
-                  }
-                  prompt = {
-                    this.state.prompt
-                  }
-                  answer = {
-                    this.state.answer
-                  }
-                  onChange = {
-                    this.onChange
-                  }
-                  setField = {
-                    this.setField
-                  }
+                return (
+                  <Custom
+                    participantRestriction={this.state.participantRestriction}
+                    prompt={this.state.prompt}
+                    answer={this.state.answer}
+                    onChange={this.onChange}
+                    setField={this.setField}
                   />
                 );
               }
@@ -292,29 +250,18 @@ export default class App extends React.Component {
           }
         }
       }
-      return ( <
-        ViewerOverlay streamer = {
-          this.state.streamer
-        }
-        visibilityChanged = {
-          this.visibilityChanged
-        }
-        isVisible = {
-          this.state.isVisible
-        }
-        onChange = {
-          this.onChange
-        }
-        prompt = {
-          this.state.prompt
-        }
-        answer = {
-          this.state.answer
-        }
+      return (
+        <ViewerOverlay
+          streamer={this.state.streamer}
+          visibilityChanged={this.visibilityChanged}
+          isVisible={this.state.isVisible}
+          onChange={this.onChange}
+          prompt={this.state.prompt}
+          answer={this.state.answer}
         />
       );
     } else {
-      return <div / > ;
+      return <div />;
     }
   }
 }
