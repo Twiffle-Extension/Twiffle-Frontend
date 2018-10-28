@@ -16,15 +16,15 @@ let styles = {
 };
 
 function ViewerOverlay(props) {
-  if (props.didWin){
-    return <WinnerOverlay onChange={props.onChange}/>
+  if (props.didWin) {
+    return <WinnerOverlay onChange={props.onChange} />;
   }
   return (
     <div>
       <Overlay width={340} height={90}>
         <div className={css(styles.overlayHeader)}>
           <Text color="#fff" weight="medium">
-            Participate in {props.streamer || "ChoAssUpPussy"} Raffle
+            Participate in {props.streamer || "kennetpostigo"} Raffle
           </Text>
           <Text
             color="#fff"
@@ -38,11 +38,16 @@ function ViewerOverlay(props) {
         <Text size="sm" color="#fff" weight="bold">
           {props.prompt || "Your Number"}
         </Text>
+        <div style={{display: "flex"}}>
         <TextInput
           borderRadius={6}
           value={props.answer}
           onChange={({ target }) => props.onChange("answer", target.value)}
         />
+        <Button size="sm"backgroundColor="#78D4FD" color="#fff" border="none" onClick={() => props.visibilityChanged(!props.isVisible)}>
+          GO
+        </Button>
+        </div>
       </Overlay>
     </div>
   );

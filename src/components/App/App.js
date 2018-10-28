@@ -18,7 +18,7 @@ export default class App extends React.Component {
     //if the extension is running on twitch or dev rig, set the shorthand here. otherwise, set to null.
     this.twitch = window.Twitch ? window.Twitch.ext : null;
     this.state = {
-      countdown: 5000000,
+      countdown: 10000,
       raffle_id: "",
       user_id: "123123",
       answer: "",
@@ -29,7 +29,7 @@ export default class App extends React.Component {
       isStarted: false,
       isCard: false,
       isRunning: false,
-      didWin: true,
+      didWin: false,
 
       title: "",
       linkToItem: "",
@@ -53,6 +53,11 @@ export default class App extends React.Component {
     };
   }
 
+  componentDidUpdate(){
+    if(this.state.countdown === 0){
+      this.setState(() => ({ didWin: true }))
+    }
+  }
   contextUpdate(context, delta) {
     if (delta.includes("theme")) {
       this.setState(() => {
@@ -74,7 +79,7 @@ export default class App extends React.Component {
   componentDidMount() {
     setInterval(() => {
       this.setState((s) =>({
-        countdown: s.countdown - 1 + "",
+        countdown: s.countdown > 0? s.countdown - 1 + "" : s.countdown,
       }));
     }, 500);
     if (this.twitch) {
