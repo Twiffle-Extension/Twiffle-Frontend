@@ -70,6 +70,7 @@ export default class App extends React.Component {
   componentDidMount() {
     if (this.twitch) {
       this.twitch.onAuthorized(auth => {
+        this.setState(() => ({ userId: auth.userId }));
         this.Authentication.setToken(auth.token, auth.userId);
         if (!this.state.finishedLoading) {
           // if the component hasn't finished loading (as in we've not set up after getting a token), let's set it up now.
@@ -111,28 +112,33 @@ export default class App extends React.Component {
   }
 
   postCreditCard = async () => {
-    var data = {
-      user_id: this.state.user_id,
-      cNum: this.state.cNum,
-      cHold: this.state.cHold,
-      cMonth: this.state.cMonth,
-      cYear: this.state.cYear,
-      csk: this.state.csk
-    };
-    let res = await fetch("https://210bd120.ngrok.io/stream/raffle/winner_details/123", {
-      method: "POST",
-      // credentials: "same-origin", // include, same-origin, *omit
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    let next = await res.json();
-    console.log("next", next);
-    if (res.ok) {
-      this.setField("isCard", true)
+    if (this.state.cNum && this.state.cHold && this.state.cMonth && this.state.cYear && this.state.csk) {
+      var data = {
+        user_id: this.state.user_id,
+        cNum: this.state.cNum,
+        cHold: this.state.cHold,
+        cMonth: this.state.cMonth,
+        cYear: this.state.cYear,
+        csk: this.state.csk
+      };
+      let res = await fetch("https://210bd120.ngrok.io/stream/raffle/winner_details/123", {
+        method: "POST",
+        // credentials: "same-origin", // include, same-origin, *omit
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+  
+      let next = await res.json();
+      console.log("next", next);
+      if (res.ok) {
+        this.setField("isCard", true)
+      }
+    } else {
+      console.log('false')
     }
+    
   }
   postGiveAway = async () => {
     var data = {
@@ -150,8 +156,6 @@ export default class App extends React.Component {
       body: JSON.stringify(data),
     });
 
-    let next = await res.json();
-    console.log("next", next);
     if (res.ok) {
       this.setField("isStarted", true);
     }
