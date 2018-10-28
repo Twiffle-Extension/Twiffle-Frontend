@@ -16,7 +16,7 @@ let styles = {
 };
 
 function ViewerOverlay(props) {
-  if (props.winner){
+  if (props.didWin){
     return <WinnerOverlay onChange={onChange}/>
   }
   return (
