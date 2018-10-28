@@ -1,0 +1,19 @@
+{
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "browsers": ["> 20%", "not dead"]
+          }
+        }
+      ],
+      "react"
+    ],
+    "plugins": [
+      "syntax-dynamic-import",
+      "transform-class-properties",
+      "transform-object-rest-spread"
+    ]
+  }
+  
