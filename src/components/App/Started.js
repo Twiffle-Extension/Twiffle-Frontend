@@ -19,7 +19,7 @@ let styles = {
   },
   btnGroup: {
     display: "flex",
-    marginTop: 55,
+    marginTop: 50,
     flex: 1,
     alignSelf: "flex-end",
     alignItems: "center",
