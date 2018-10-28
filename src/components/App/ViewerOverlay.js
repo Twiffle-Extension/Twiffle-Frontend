@@ -1,5 +1,5 @@
 import React from "react";
-import { css } from "glamor"
+import { css } from "glamor";
 import Button from "./Button";
 import Overlay from "./Overlay";
 import Text from "./Text";
@@ -25,7 +25,7 @@ function ViewerOverlay(props) {
           <Text
             color="#fff"
             weight="medium"
-            onClick={() => this.visibilityChanged(!props.isVisible)}
+            onClick={() => props.visibilityChanged(!props.isVisible)}
           >
             &#x2715;
           </Text>
@@ -37,9 +37,7 @@ function ViewerOverlay(props) {
         <TextInput
           borderRadius={6}
           value={props.answer}
-          onChange={({ target }) =>
-            this.setState(() => ({ answer: target.value }))
-          }
+          onChange={({ target }) => props.onChange("answer", target.value)}
         />
       </Overlay>
     </div>
