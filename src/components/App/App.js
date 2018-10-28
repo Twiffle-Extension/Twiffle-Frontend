@@ -26,6 +26,7 @@ export default class App extends React.Component {
       isIntroduced: false,
       isStarted: false,
       isCard: false,
+      didWin: false,
 
       title: "",
       linkToItem: "",
@@ -256,6 +257,7 @@ export default class App extends React.Component {
       }
       return (
         <ViewerOverlay
+          didWin={this.state.didWin}
           streamer={this.state.streamer}
           visibilityChanged={this.visibilityChanged}
           isVisible={this.state.isVisible}
